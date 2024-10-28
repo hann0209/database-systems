@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Add Product{% endblock %}
+{% block content %}
+<h2>{% if produk %}Edit{% else %}Add{% endif %} Product</h2>
+<form method="POST" action="">
+    <div class="mb-3">
+        <label for="name" class="form-label">Product Name</label>
+        <input type="text" name="name" id="name" class="form-control" value="{{ produk.name if produk else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input type="number" name="price" id="price" class="form-control" value="{{ produk.price if produk else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea name="description" id="description" class="form-control">{{ produk.description if produk else '' }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="category_id" class="form-label">Category</label>
+        <select name="category_id" id="category_id" class="form-control" required>
+            {% for kategori in categories %}
+            <option value="{{ kategori.id }}" {% if produk and produk.category_id == kategori.id %}selected{% endif %}>{{ kategori.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="supplier_id" class="form-label">Supplier</label>
+        <select name="supplier_id" id="supplier_id" class="form-control" required>
+            {% for pemasok in suppliers %}
+            <option value="{{ pemasok.id }}" {% if produk and produk.supplier_id == pemasok.id %}selected{% endif %}>{{ pemasok.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+{% endblock %}

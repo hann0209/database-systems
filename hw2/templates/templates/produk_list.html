@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Daftar Produk{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Product List</h2>
+    <a href="{{ url_for('add_produk') }}" class="btn btn-primary">Add Product</a>
+</div>
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Supplier</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produk in products %}
+        <tr>
+            <td>{{ produk.id }}</td>
+            <td>{{ produk.name }}</td>
+            <td>{{ produk.price }}</td>
+            <td>{{ produk.description }}</td>
+            <td>{{ produk.category.name }}</td>
+            <td>{{ produk.supplier.name }}</td>
+            <td>
+                <a href="{{ url_for('edit_produk', id=produk.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                <form action="{{ url_for('delete_produk', id=produk.id) }}" method="POST" class="d-inline">
+                    <button class="btn btn-danger btn-sm" onclick="return confirm('Delete This Product?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

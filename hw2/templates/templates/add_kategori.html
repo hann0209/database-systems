@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Add Category{% endblock %}
+{% block content %}
+<h2>{% if kategori %}Edit{% else %}Add{% endif %} Category</h2>
+<form method="POST" action="">
+    <div class="mb-3">
+        <label for="name" class="form-label">Supplier Name</label>
+        <input type="text" name="name" id="name" class="form-control" value="{{ kategori.name if kategori else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea name="description" id="description" class="form-control">{{ kategori.description if kategori else '' }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+{% endblock %}
