@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">MyApp</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/create">Create New Entry</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <h1 class="text-center">Welcome to the Homepage</h1>
+    <div id="entry-list" class="mt-4">
+        <!-- Entry List Content Will Go Here -->
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Fetch entries from the server
+        $.ajax({
+            url: '/entries',  // The route to fetch entries
+            type: 'GET',
+            success: function(response) {
+                var entries = response.entries;
+                var entryListHtml = '';
+                
+                if (entries.length > 0) {
+                    // Loop through each entry and create HTML content
+                    entries.forEach(function(entry) {
+                        entryListHtml += `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">${entry.title}</h5>
+                                    <p class="card-text">${entry.content}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    entryListHtml = '<p>No entries found.</p>';
+                }
+
+                // Append the generated HTML to the entry list container
+                $('#entry-list').html(entryListHtml);
+            },
+            error: function() {
+                $('#entry-list').html('<p>Failed to load entries. Please try again later.</p>');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
