@@ -9,4 +9,4 @@ Department：科技系3年級
 <p dir="auto"><a href="https://github.com/hann0209/database-systems/tree/main/hw3" rel="nofollow">HW 3</a></p>
 <p dir="auto"><a href="https://youtu.be/NsyJgXOH5vc" rel="nofollow">HW 3 video</a></p>
 <p dir="auto"><a href="https://github.com/hann0209/database-systems/tree/main/hw4" rel="nofollow">HW 4</a></p>
-<p dir="auto"><a href="https://youtu.be/NsyJgXOH5vc" rel="nofollow">HW 4 video</a></p>
+<p dir="auto"><a href="https://youtu.be/vOZSNIZWLAc" rel="nofollow">HW 4 video</a></p>
