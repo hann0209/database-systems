@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">MyApp</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/create">Create New Entry</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <h1 class="text-center">Welcome to the Homepage</h1>
+    <div id="entry-list" class="mt-4">
+        <!-- Entry List Content Will Go Here -->
+    </div>
+</div>
+
+<!-- Modal for Edit Entry -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Entry</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="form-group">
+                        <label for="editTitle">Title</label>
+                        <input type="text" class="form-control" id="editTitle" required>
+                        <input type="hidden" class="form-control" id="editId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editContent">Content</label>
+                        <textarea class="form-control" id="editContent" rows="4" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveEdit">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Fetch entries from the server
+        function loadEntries() {
+            $.ajax({
+                url: '/entries',
+                type: 'GET',
+                success: function(response) {
+                    var entries = response.entries;
+                    var entryListHtml = '';
+
+                    if (entries.length > 0) {
+                        entries.forEach(function(entry) {
+                            entryListHtml += `
+                                <div class="card mb-3" data-id="${entry.id}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${entry.title}</h5>
+                                        <p class="card-text">${entry.content}</p>
+                                        <button class="btn btn-warning btn-sm edit-entry">Edit</button>
+                                        <button class="btn btn-danger btn-sm delete-entry">Delete</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        entryListHtml = '<p>No entries found.</p>';
+                    }
+
+                    $('#entry-list').html(entryListHtml);
+                },
+                error: function() {
+                    $('#entry-list').html('<p>Failed to load entries. Please try again later.</p>');
+                }
+            });
+        }
+
+        loadEntries();
+
+        // Handle Edit Button Click
+        $(document).on('click', '.edit-entry', function() {
+            var card = $(this).closest('.card');
+            var id = card.data('id');
+            var title = card.find('.card-title').text();
+            var content = card.find('.card-text').text();
+
+            $('#editTitle').val(title);
+            $('#editId').val(id);
+            $('#editContent').val(content);
+            $('#editModal').data('id', id).modal('show');
+        });
+
+        // Save Edited Entry
+        $('#saveEdit').click(function() {
+            var id = $('#editModal').data('id');
+            var updatedTitle = $('#editTitle').val();
+            var updatedContent = $('#editContent').val();
+
+            $.ajax({
+                url: `/entries/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ title: updatedTitle, content: updatedContent }),
+                success: function() {
+                    $('#editModal').modal('hide');
+                    loadEntries();
+                },
+                error: function() {
+                    alert(id);
+                    alert('Failed to update entry. Please try again.');
+                }
+            });
+        });
+
+        // Handle Delete Button Click
+        $(document).on('click', '.delete-entry', function() {
+            var card = $(this).closest('.card');
+            var id = card.data('id');
+
+            if (confirm('Are you sure you want to delete this entry?')) {
+                $.ajax({
+                    url: `/entries/${id}`,
+                    type: 'DELETE',
+                    success: function() {
+                        loadEntries();
+                    },
+                    error: function() {
+                        alert('Failed to delete entry. Please try again.');
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
